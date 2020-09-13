@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.psh.mapper.BoardMapper">
+<sql id="criteria">
+		<trim prefix=" and (" suffix=") " prefixOverrides="or">
+			<foreach item="type" collection="typeArr">
+				<trim prefix="or">
+					<choose>
+						<when test="type=='T'.toString()">
+							title like concat('%',#{keyword},'%')
+						</when>
+						<when test="type=='C'.toString()">
+							content like concat('%',#{keyword},'%')
+						</when>
+						<when test="type=='W'.toString()">
+							writer like concat('%',#{keyword},'%')
+						</when>
+					</choose>
+				</trim>
+			</foreach>
+		</trim>
+	</sql>
+	<select id="getList" resultType="org.psh.domain.BoardVO">
+<![CDATA[
+	select * from psh_board where bno > 0
+]]>
+	
+	</select>
+	
+<select id="getTotalCount" resultType="int">
+select count(*) from
+		psh_board where bno > 0
+	<include refid="criteria"></include>
+</select>	
+	
+	
+<select id="getListWithPaging" resultType="org.psh.domain.BoardVO">
+<![CDATA[
+select bno,title,content,writer,regdate,updatedate,replycnt
+from (
+select @rownum:=@rownum+1 as rownum,b.*
+from (
+select @rownum:=0) as tmp, psh_board b
+where 1=1
+]]>
+		<include refid="criteria"></include>
+<![CDATA[		 
+order by bno desc)boardList 
+where rownum > (#{pageNum} -1 ) * #{amount} and rownum <= #{pageNum}*#{amount}
+]]>	
+	</select>
+	
+
+
+	<insert id="insert">
+	insert into psh_board(title,content,writer)
+	values(#{title},#{content},#{writer})	
+	</insert>
+	
+	<insert id="insertSelectKey">
+<selectKey keyProperty="bno" order="BEFORE" resultType="int">
+			select max(bno)+1 bno from psh_board
+	</selectKey>
+	insert into psh_board(title,content,writer)
+	values(#{title},#{content},#{writer})
+	
+	</insert>
+	<select id="read" resultType="org.psh.domain.BoardVO">
+		
+		select * from psh_board where bno=#{bno}
+	
+	</select>
+<delete id ="replydelete">
+	delete from psh_reply where bno=#{bno}
+</delete>
+	
+	<delete id="delete">
+		delete from psh_board where bno=#{bno}
+	</delete>
+	
+	<update id="update">
+		update psh_board set title=#{title},content=#{content},writer=#{writer},
+		updatedate=sysdate() where bno=#{bno}	
+	
+	</update>
+	<update id="updateReplyCnt">
+		update psh_board set replycnt = replycnt + #{amount} where bno = #{bno}	
+	</update>
+	
+</mapper>

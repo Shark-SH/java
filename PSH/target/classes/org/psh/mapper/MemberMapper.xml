@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.psh.mapper.MemberMapper">
+<insert id="SignupInsert">
+insert into psh_member(id,ps,ph) values(#{id},#{ps},#{ph})
+
+</insert>
+
+<select id="findid" resultType="org.psh.domain.MemberDTO">
+select id from psh_member where ph=#{ph}
+
+</select>
+
+<select id="findps" resultType="org.psh.domain.MemberDTO">
+select ps from psh_member where id=#{id}
+
+</select>
+<select id="idcheck" parameterType="String" resultType="Integer">
+      SELECT COUNT(*) FROM psh_member
+      WHERE id = #{id}
+</select>
+<select id="login" resultType="org.psh.domain.MemberDTO">
+
+select * from psh_member where id=#{id} and ps = #{ps};
+
+</select>
+
+ 
+</mapper>

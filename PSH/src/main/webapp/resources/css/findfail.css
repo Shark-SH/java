@@ -1,0 +1,38 @@
+@charset "UTF-8";
+
+#login_frame{
+	
+	width:100%;
+	height:600px;
+	text-align:center;
+}
+#login_form{
+	text-align:center;
+	width:30%;
+	height:200px;
+	margin-top:60px;
+	margin-bottom:40px;
+	border:1px solid lightgray;
+}
+#login_form h2{
+	margin-top:20px;
+}
+#login_form ul{
+	margin-top:50px;
+	list-style:none;
+	padding:0px;
+}
+#login_form ul li{
+	display:inline;
+	padding-left:20px;
+	padding-right:20px;
+	border:1px solid gray;
+}
+#login_form ul li a{
+	font-weight:bold;
+	color:black;
+	text-decoration:none;
+}
+#login_form ul li a:hover{
+	color:blue;
+}

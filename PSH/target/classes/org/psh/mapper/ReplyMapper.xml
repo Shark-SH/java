@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.psh.mapper.ReplyMapper">
+
+<select id="getListWithPaging" resultType="org.psh.domain.ReplyVO">
+ <![CDATA[
+  select rno,bno,reply, replyer, replydate,updatedate
+		from (select @rownum:=@rownum+1 as rownum, re.*
+		from (select @rownum:=0) as tmp, psh_reply re where bno=#{bno} order by bno desc) 
+	replyList where rownum > (#{cri.pageNum} -1) * #{cri.amount} and rownum <= #{cri.pageNum}* #{cri.amount}
+	]]>
+  </select>
+<select id="getCountByBno" resultType="int">
+  select count(*) from psh_reply where bno=#{bno}
+</select> 
+
+<insert id="insert">
+insert into psh_reply (bno,reply,replyer)
+value (#{bno},#{reply},#{replyer})
+</insert>
+
+<select id="read" resultType="org.psh.domain.ReplyVO">
+select * from psh_reply where rno = #{rno};
+</select>
+
+<delete id="delete">
+delete from psh_reply where rno = #{rno};
+</delete>
+
+<update id="update">
+update psh_reply set reply = #{reply}, updatedate = sysdate() where rno = #{rno}
+</update>
+
+
+
+</mapper>
